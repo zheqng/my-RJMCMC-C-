@@ -1,0 +1,49 @@
+rm( list = ls())
+setwd("/media/zheqng/Seagate Backup Plus Drive/zheqng@nwu/src/RJMCMC-my-C/simu1/2019.3.1/train/demo/")
+library("fda")
+# library("mcsm")
+time <- read.table("time.txt",fill = TRUE)
+ time<-as.matrix(time)
+time<- time[-1,]
+time<-matrix(t(time),ncol=1)
+time<-as.vector(time)
+N.half = N/2
+time<-time[(1:N.half)*2]
+time.diff<-time[2:N.half] - time[1:(N.half -1)]
+plot(time[2:N.half] - time[1:(N.half -1)])
+datha<- read.table("traindata.sts",fill=TRUE,col.names = c("iter number","K","log lik","split/merge","acc/reject","prob","simu_acc/simu_rej","prob","death or reserve"))
+
+
+theta.tmp<-read.table("parameter.res",fill=TRUE)
+theta.tmp <- as.matrix(theta.tmp)
+theta.tmp <- as.vector(theta.tmp)
+N = nrow(datha)
+# index = (c(0,cumsum(datha$K)[-N])*4+1):(cumsum(datha$K)*4)
+
+z <-read.table("z.res",fill = TRUE)
+
+theta= vector("list",N)
+for(i in 1:N){
+  k = datha$K[i]
+  theta[[i]]$pi <- theta.tmp[1:k]
+  theta[[i]]$w<- theta.tmp[(k+1):(2*k)]
+  theta[[i]]$v<- theta.tmp[(2*k+1):(3*k)]
+  theta[[i]]$sigma2<- theta.tmp[(3*k+1):(4*k)]
+  theta[[i]]$K = k
+  theta.tmp<-theta.tmp[-(1:(4*k))]
+}
+
+
+
+
+traindata = list("temp","X","Y","curve.num")
+traindata$temp =read.table("traindata.dat")
+traindata$curve.num = dim(traindata$temp)[1]/2
+traindata$X=(traindata$temp)[(1:traindata$curve.num)*2-1,]
+traindata$Y=traindata$temp[(1:traindata$curve.num)*2,]
+
+testdata = list("temp","X","Y","curve.num")
+testdata$temp =read.table("testdata.dat")
+testdata$curve.num = dim(testdata$temp)[1]/2
+testdata$X=(testdata$temp)[(1:testdata$curve.num)*2-1,]
+testdata$Y=testdata$temp[(1:testdata$curve.num)*2,]
