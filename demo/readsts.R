@@ -1,16 +1,8 @@
 rm( list = ls())
-setwd("/media/zheqng/Seagate Backup Plus Drive/zheqng@nwu/src/RJMCMC-my-C/simu1/2019.3.1/train/demo/")
+setwd("~/src/RJMCMC-my-C/fix-k-move/demo/")
 library("fda")
 # library("mcsm")
-time <- read.table("time.txt",fill = TRUE)
- time<-as.matrix(time)
-time<- time[-1,]
-time<-matrix(t(time),ncol=1)
-time<-as.vector(time)
-N.half = N/2
-time<-time[(1:N.half)*2]
-time.diff<-time[2:N.half] - time[1:(N.half -1)]
-plot(time[2:N.half] - time[1:(N.half -1)])
+
 datha<- read.table("traindata.sts",fill=TRUE,col.names = c("iter number","K","log lik","split/merge","acc/reject","prob","simu_acc/simu_rej","prob","death or reserve"))
 
 
@@ -19,6 +11,16 @@ theta.tmp <- as.matrix(theta.tmp)
 theta.tmp <- as.vector(theta.tmp)
 N = nrow(datha)
 # index = (c(0,cumsum(datha$K)[-N])*4+1):(cumsum(datha$K)*4)
+
+time <- read.table("time.txt",fill = TRUE)
+time<-as.matrix(time)
+time<- time[-1,]
+time<-matrix(t(time),ncol=1)
+time<-as.vector(time)
+N.half = N/2
+time<-time[(1:N.half)*2]
+time.diff<-time[2:N.half] - time[1:(N.half -1)]
+plot(time[2:N.half] - time[1:(N.half -1)])
 
 z <-read.table("z.res",fill = TRUE)
 
@@ -33,7 +35,10 @@ for(i in 1:N){
   theta.tmp<-theta.tmp[-(1:(4*k))]
 }
 
-
+w = NULL
+for(i in 1:N){
+  w <-rbind(w,theta[[i]]$w)
+}
 
 
 traindata = list("temp","X","Y","curve.num")
