@@ -1,5 +1,6 @@
-rm( list = ls())
-setwd("~/src/RJMCMC-my-C/fix-k-move/demo/")
+# rm( list = ls())
+# setwd("~/src/RJMCMC-my-C/fix-k-move/demo/")
+# setwd("/media/zheqng/Seagate Backup Plus Drive/zheqng@nwu/src/RJMCMC-my-C/simu1/fix-k-move/demo/")
 library("fda")
 # library("mcsm")
 
@@ -20,7 +21,7 @@ time<-as.vector(time)
 N.half = N/2
 time<-time[(1:N.half)*2]
 time.diff<-time[2:N.half] - time[1:(N.half -1)]
-plot(time[2:N.half] - time[1:(N.half -1)])
+# plot(time[2:N.half] - time[1:(N.half -1)])
 
 z <-read.table("z.res",fill = TRUE)
 
@@ -35,10 +36,10 @@ for(i in 1:N){
   theta.tmp<-theta.tmp[-(1:(4*k))]
 }
 
-w = NULL
-for(i in 1:N){
-  w <-rbind(w,theta[[i]]$w)
-}
+# w = NULL
+# for(i in 1:N){
+#   w <-rbind(w,theta[[i]]$w)
+# }
 
 
 traindata = list("temp","X","Y","curve.num")

@@ -9,6 +9,8 @@ demo : traindata.dat traindata.arg ../rj_mix
 	../rj_mix traindata
 #	../ct_mix galaxy
 
+demo_test : traindata.dat traindata.arg ../test_kiss
+	../test_kiss traindata
 
 clean :
 	rm -f *.sts *.txt 

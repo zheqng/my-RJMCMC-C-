@@ -59,10 +59,16 @@ double log_likelihood2(const curve Data[], const pq_point &m)
 		{
 			logP(k) = log_likelihood_micro2(Data[t], m, k);
 		}
-		norm += sum(exp(logP - logP.max())) + logP.max();
+		logP += log(m.pi);
+		norm += logsumexp(logP);
 	}
 	return norm;
 }
+
+double logsumexp(vec & logP){
+	return log(sum(exp(logP - logP.max()))) + logP.max();
+}
+
 
 /************************************************************************/
 /* Initializes the parameters of the model (and returns the scaling	*/

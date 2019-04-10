@@ -5,7 +5,7 @@
 #define MaxM 91
 #define MaxL 102
 #define MaxK 20
-#define RAND_MAX 0x7fff
+// #define RAND_MAX 0x7fff
 #define NSample 100000
 
 #include "alea.h"
@@ -256,6 +256,7 @@ extern ofstream testfile;
 void xixj(mat & K, const vec &X);
 double log_likelihood_micro2(const curve &Dat, const pq_point &theta, int k);
 double log_likelihood2(const curve Data[], const pq_point &m);
+double logsumexp(vec & logP);
 void draw_initial_model(const curve Data[], pq_point &m, double *logl);
 double prop_split(const curve Data[], pq_point &m, int k, int *k1, int *k2);
 double prop_merge(const curve Data[], pq_point &m_old, pq_point &m_new, int *k, int k1, int k2);

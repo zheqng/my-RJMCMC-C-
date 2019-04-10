@@ -12,7 +12,41 @@ exp.cov.noise<-function(x,thet,k){
 }
 # dist(x, method = "euclidean", diag = FALSE, upper = FALSE, p = 2)
 
+my.dmultinorm<-function(x,mu = rep(0,length(x)),sigma,log=TRUE){
+   Nm = length(x)
+   x = t(x)
+  log.d =  -t(x)%*%solve(sigma,x)/2.0 - Nm/2.0 * log(2.0 * pi) - 1/2 * log(abs(det(sigma)))
+  if(log==TRUE) return(log.d)
+  else return(exp(log.d))
+}
+log.likelihood.micro <- function(traindata,thet,m,k){
+  norm = dmvnorm(traindata$Y[m,],sigma=exp.cov.noise(traindata$X[m,],thet,k),log=TRUE)
+   return(norm)
+}
 
+print.posterior<-function(traindata,thet){
+  norm =0.0;log.P = matrix(rep(0,(traindata$curve.num * thet$K)),traindata$curve.num,thet$K)
+  for(m in 1:(traindata$curve.num)){
+    # log.P = rep(0,3)
+    for(k in 1:(thet$K)){
+      log.P[m,k] = my.dmultinorm(x = traindata$Y[m,],mu = rep(0,length(traindata$Y[m,])),sigma=exp.cov.noise(traindata$X[m,],thet,k),log=FALSE)
+    }
+  }
+  log.P
+  return(log.P)
+}
+log.likelihood <-function(traindata,thet){
+  norm =0.0;
+  for(m in 1:(traindata$curve.num)){
+    log.P = rep(0,3)
+  for(k in 1:(thet$K)){
+    log.P[k] =my.dmultinorm(x = traindata$Y[m,],mu = rep(0,length(traindata$Y[m,])),sigma=exp.cov.noise(traindata$X[m,],thet,k),log=FALSE)
+      # dmvnorm(traindata$Y[m,],mean=rep(0,length(traindata$X[m,])),sigma=exp.cov.noise(traindata$X[m,],thet,k),log=TRUE)
+  }
+    norm = norm + sum(log.P)
+  }
+  return(norm)
+}
 predict.gp<-function(x,y,x.new,thet,k){
   K.star<-exp.cov(x,x.new,thet,k) 
   K<-exp.cov.noise(x,thet,k)

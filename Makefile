@@ -66,6 +66,9 @@ all: rj_mix
 rj_mix:  nuts.o HMC.o mix_lib.o alea.o
 	$(CXX) $(CXXFLAGSNP)  -g   -o  $@ $(@).cpp $^  $(LIB_FLAGS)
 
+test_kiss:mix_lib.o alea.o
+	$(CXX) $(CXXFLAGSNP)  -g   -o  $@ $(@).cpp $^  $(LIB_FLAGS)
+	
 # rj_mix.o:rj_mix.cpp RWMH.h
 # RWMH.o: RWMH.cpp RWMH.h HMC.h
 nuts.o: nuts.cpp nuts.h
