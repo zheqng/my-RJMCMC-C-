@@ -1,8 +1,8 @@
 rm(list = ls())
 setwd("/media/zheqng/Seagate Backup Plus Drive/zheqng@nwu/src/RJMCMC-my-C/simu1/fix-k-move/demo/")
-
+# setwd('/home/zheqng/src/RJMCMC-my-C/fix-k-move/demo/')
 library('matrixStats')
-library('GPFDA')
+# library('GPFDA')
 library('MASS')
 library('mvtnorm')
 source('predict.r')

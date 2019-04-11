@@ -149,6 +149,8 @@ int main(int argc, char **argv)
 	draw_initial_model(Data, theta, &logl);
 	log_likelihood2(Data, theta);
 
-	theta.print("theta:");
-	write_data(theta, logl, stats, z, 1);
+        theta.print("theta:");
+        write_data(theta, logl, stats, z, 1);
+
+       
 }

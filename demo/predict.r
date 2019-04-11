@@ -1,5 +1,16 @@
 # theta[i]$w theta[i]$v theta[i]$pi theta[i]$sigma2 theta[i]$k
 # theta = matrix(rep(0,4*10),ncol = 4)
+xixj<-function(x,x.star){
+  n = length(x);m = length(x.star)
+  tmp = matrix(rep(0,m*n),nrow = n)
+  for(i in 1:n){
+    for(j in i:m){
+      tmp[i,j] = (x[i] - x.star[j])^2
+      tmp[j,i] = tmp[i,j]
+    }
+  }
+  return(tmp)
+}
 exp.cov<-function(x,x.star,thet,k){
   n = length(x)
   tmp<-(thet$v[k])*exp(-xixj(t(x),t(x.star))*(thet$w[k])/2) 
@@ -7,7 +18,7 @@ exp.cov<-function(x,x.star,thet,k){
 }
 exp.cov.noise<-function(x,thet,k){
   n = length(x)
-  tmp<-(thet$v[k])*exp(-xixj(t(x))*(thet$w[k])/2) + (thet$sigma2[k])*diag(n)
+  tmp<-(thet$v[k])*exp(-xixj(t(x),t(x))*(thet$w[k])/2) + (thet$sigma2[k])*diag(n)
   return(tmp)
 }
 # dist(x, method = "euclidean", diag = FALSE, upper = FALSE, p = 2)
@@ -29,7 +40,7 @@ print.posterior<-function(traindata,thet){
   for(m in 1:(traindata$curve.num)){
     # log.P = rep(0,3)
     for(k in 1:(thet$K)){
-      log.P[m,k] = my.dmultinorm(x = traindata$Y[m,],mu = rep(0,length(traindata$Y[m,])),sigma=exp.cov.noise(traindata$X[m,],thet,k),log=FALSE)
+      log.P[m,k] = my.dmultinorm(x = traindata$Y[m,],mu = rep(0,length(traindata$Y[m,])),sigma=exp.cov.noise(traindata$X[m,],thet,k),log=TRUE)
     }
   }
   log.P

@@ -127,12 +127,12 @@ void sample_nuts_cpp(const curve Data[], pq_point &current_theta,
 {
 
 
-    int iter = 10;
+    int iter = 2;
     int MAXDEPTH = 5;
     double lambda = 1.0;
     int KK = current_theta.w.size();
 
-    int I_adapt = 10, t0 = 10;
+    int I_adapt = 10, t0 = 2;
     double delta = 0.65, kappa = 0.75, gamma = 0.05;
     double H_bar[100], log_eps_bar[100], log_eps[100];
     double epsilon = 1e-6;

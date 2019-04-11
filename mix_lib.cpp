@@ -33,9 +33,10 @@ double log_likelihood_micro2(const curve &Dat, const pq_point &theta, int k)
 	// square(Dat.X * rowones - colones * trans(Dat.X));
 
 	cov = theta.v(k) * exp(-SquareX * theta.w(k) / 2.0) + EYE * theta.sigma2(k);
-
+	// testfile << cov << endl;
 	vec tmp(1);
-	tmp = -trans(Dat.Y) * solve(cov , Dat.Y) / 2.0 - (double)r / 2.0 * log(2.0 * PI) - 1.0 / 2.0 * log(fabs(det(cov)));
+	// testfile<<(cov * solve(cov, Dat.Y))<<endl;
+	tmp = -trans(Dat.Y) * solve(cov, Dat.Y) / 2.0 - (double)r / 2.0 * log(2.0 * PI) - 1.0 / 2.0 * log(fabs(det(cov)));
 
 	return tmp(0);
 }
@@ -53,14 +54,20 @@ double log_likelihood2(const curve Data[], const pq_point &m)
 	double norm;
 	vec logP(K);
 	norm = 0.0;
+	pq_point theta;
 	for (t = 0; t < Curve_num; t++)
 	{
+		logP = zeros<vec>(r);
 		for (k = 0; k < K; k++)
 		{
+			// write_file(string s, ofstream &myfile)
+			theta = m;
+			// testfile << Data[t].Y << endl;
 			logP(k) = log_likelihood_micro2(Data[t], m, k);
 		}
 		logP += log(m.pi);
 		norm += logsumexp(logP);
+		// testfile<<logP<<endl;
 	}
 	return norm;
 }
