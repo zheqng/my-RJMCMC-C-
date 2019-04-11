@@ -57,7 +57,7 @@ double log_likelihood2(const curve Data[], const pq_point &m)
 	pq_point theta;
 	for (t = 0; t < Curve_num; t++)
 	{
-		logP = zeros<vec>(r);
+		logP = zeros<vec>(K);
 		for (k = 0; k < K; k++)
 		{
 			// write_file(string s, ofstream &myfile)

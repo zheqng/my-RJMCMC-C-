@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 
         read_parameters(argc, argv, Data);
         draw_initial_model(Data, theta, &logl);
-        theta.print("theta:");
+        // theta.print("theta:");
         write_data(theta, logl, stats, z, 0);
 
         t_end = time(NULL);
