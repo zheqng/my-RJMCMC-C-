@@ -4,9 +4,9 @@ xixj<-function(x,x.star){
   n = length(x);m = length(x.star)
   tmp = matrix(rep(0,m*n),nrow = n)
   for(i in 1:n){
-    for(j in i:m){
+    for(j in 1:m){
       tmp[i,j] = (x[i] - x.star[j])^2
-      tmp[j,i] = tmp[i,j]
+      # tmp[j,i] = tmp[i,j]
     }
   }
   return(tmp)
@@ -59,7 +59,9 @@ log.likelihood <-function(traindata,thet){
   return(norm)
 }
 predict.gp<-function(x,y,x.new,thet,k){
+  1
   K.star<-exp.cov(x,x.new,thet,k) 
+  2
   K<-exp.cov.noise(x,thet,k)
   # K.inv<-solve(exp.cov.noise(x,thet,k) )
   # mu<- t(K.star)%*% K.inv %*% t(y)

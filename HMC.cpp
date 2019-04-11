@@ -185,15 +185,15 @@ void Gibbs_Sampling_pi(pq_point &theta, const vec &z)
 void Gibbs_Sampling_z(const curve Data[], const pq_point &theta, vec &z)
 {
         int K = theta.w.size();
-        vec p_k(K);
+        vec logp_k(K);
         z = zeros<vec>(Curve_num);
         for (int m = 0; m < Curve_num; m++)
         {
                 for (int k = 0; k < K; k++)
                 {
-                        p_k(k) = theta.pi(k) * exp(log_likelihood_micro2(Data[m], theta, k));
+                        logp_k(k) = log(theta.pi(k)) ＋　log_likelihood_micro2(Data[m], theta, k);
                 }
                 /*_________________________hard cut___________________________*/
-                z(m) = p_k.index_max();
+                z(m) = logp_k.index_max();
         }
 }

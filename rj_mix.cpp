@@ -104,7 +104,7 @@ int main(int argc, char **argv)
                 /*_____________update pi________________________________*/
 
                 /*************sample pi************************/
-                // Gibbs_Sampling_z(Data,theta,z);
+                Gibbs_Sampling_z(Data,theta,z);
                 Gibbs_Sampling_pi(theta, z);
                 /*___________________sample theta__________________*/
                 sample_nuts_cpp(Data, theta, z);

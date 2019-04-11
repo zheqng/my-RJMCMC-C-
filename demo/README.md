@@ -1,3 +1,5 @@
-# 说明
-- 修改了predict.r中的xixj函数，以及my.dmvnorm函数
-- 可以计算logP
+# Fix k moves
+- 修改了xixj函数，因为预测时，xixj(traindata$X,testdata$X)维度不同，所以矩阵不对称
+- 预测9000多步，结果如下
+<img src =  "fix k move 9229 iter.png" width=100%>
+- 发现z没有变化，在主程序中加入gibbs sample z

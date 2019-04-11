@@ -8,11 +8,11 @@ library('mvtnorm')
 source('predict.r')
 source('readsts.R')
 for(i in 1:N){
-  m=7;i=1;
+  m=7;i=N;
   k = z[i,m]+1
     predictdata<-predict.gp(traindata$X[m,],traindata$Y[m,],testdata$X[m,],theta[[i]],k)
-    i=m;plot.gp.i.predict(traindata,predictdata,i)
-    title(paste(N,"th iter ","predict",i,"curve"))
+    plot.gp.i.predict(traindata,predictdata,m)
+    title(paste(N,"th iter ","predict",i=m,"curve"))
     # plot.gp.predict(traindata,testdata,predictdata,1)
     # plot.gp(traindata ,testdata )
 }
