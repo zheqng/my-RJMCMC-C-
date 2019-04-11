@@ -3,3 +3,11 @@
 - 预测9000多步，结果如下
 <img src =  "fix k move 9229 iter.png" width=100%>
 - 发现z没有变化，在主程序中加入gibbs sample z
+<img src =  "fix k move ２.png" width=100%>
+
+z:
+
+2  2  2  2  1  2  0  0  0,
+2  2  2  2  1  2  0  0  0
+
+预测结果比9000多步好．

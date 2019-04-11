@@ -7,8 +7,9 @@ library('MASS')
 library('mvtnorm')
 source('predict.r')
 source('readsts.R')
-for(i in 1:N){
-  m=7;i=N;
+op <- par(mfrow=c(3,3))
+for(m in 1:9){
+  i=N;
   k = z[i,m]+1
     predictdata<-predict.gp(traindata$X[m,],traindata$Y[m,],testdata$X[m,],theta[[i]],k)
     plot.gp.i.predict(traindata,predictdata,m)
@@ -16,7 +17,7 @@ for(i in 1:N){
     # plot.gp.predict(traindata,testdata,predictdata,1)
     # plot.gp(traindata ,testdata )
 }
-
+op<- par(mfrow = c(1,1))
 log.P =   print.posterior(traindata,theta[[N]])
 
 norm = 0.0
