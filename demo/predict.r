@@ -58,19 +58,15 @@ log.likelihood <-function(traindata,thet){
   }
   return(norm)
 }
-predict.gp<-function(x,y,x.new,thet,k){
-  1
+predict.gp<-function(x,y,x.new,y.new,thet,k){
   K.star<-exp.cov(x,x.new,thet,k) 
-  2
   K<-exp.cov.noise(x,thet,k)
-  # K.inv<-solve(exp.cov.noise(x,thet,k) )
-  # mu<- t(K.star)%*% K.inv %*% t(y)
-  # solve(t(A)%*%A,t(A)%*%B)
   K.inv <-ginv(K)
   mu<- t(K.star)%*% K.inv %*% t(y)
   sigma2<-exp.cov(x.new,x.new,thet,k) - t(K.star) %*% K.inv %*% (K.star)
   sigma2<-diag(sigma2)
-result=c(list('pred.mean'=mu,'pred.sd'=sqrt(sigma2),'newdata'=x.new))
+  correlation<-cor(mu,t(y.new))
+result=c(list('pred.mean'=mu,'pred.sd'=sqrt(sigma2),'newdata'=x.new,'correlation'=correlation))
 
 return(result)
 }
@@ -83,11 +79,11 @@ plot.gp.predict<- function(traindata,testdata,predictdata,row.no){
   #
   polygon(c(predictdata$newdata, rev(predictdata$newdata)), c(upper, rev(lower)),col = rgb(127,127,127,120, maxColorValue = 255), border = NA)
   #
-  points(traindata$X[row.no,],traindata$Y[row.no,],pch=8,col=2,cex=1.5)
+  points(t(testdata$X[row.no,]),t(testdata$Y[row.no,]),pch=8,col=2,cex=1.5)
   lines(predictdata$newdata,predictdata$pred.mean,col=4,lwd=1)  
 }
 
-plot.gp<-function(traindata,testdata){
+plot.gp.test<-function(traindata,testdata){
   i=1
   plot(t(traindata$X[i,]),t(traindata$Y[i,]),type='l',ylim=range(traindata$Y))
   for(i in 2:traindata$curve.num){
@@ -107,3 +103,6 @@ plot.gp.i.predict<-function(traindata,predictdata,i){
   
 }
 # rmse(mu,y.new)
+rmse2 <- function(y,predictdata){
+ sum( (y - predictdata$pred.mean)^2)
+}
