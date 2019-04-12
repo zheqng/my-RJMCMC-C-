@@ -5,6 +5,8 @@ library("fda")
 # library("mcsm")
 
 datha<- read.table("traindata.sts",fill=TRUE,col.names = c("iter number","K","log lik","split/merge","acc/reject","prob","simu_acc/simu_rej","prob","death or reserve"))
+datha.loglik = datha[,"log.lik"]
+datha.K = datha[,"K"]
 
 
 theta.tmp<-read.table("parameter.res",fill=TRUE)
