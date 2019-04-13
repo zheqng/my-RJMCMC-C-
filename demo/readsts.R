@@ -55,3 +55,6 @@ testdata$temp =read.table("testdata.dat")
 testdata$curve.num = dim(testdata$temp)[1]/2
 testdata$X=(testdata$temp)[(1:testdata$curve.num)*2-1,]
 testdata$Y=testdata$temp[(1:testdata$curve.num)*2,]
+
+plot(datha.K)
+# min(which(datha.K==2))
