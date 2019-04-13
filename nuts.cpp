@@ -6,7 +6,7 @@ double log_total_energy(const curve Data[], pq_point &phi, pq_point &theta, cons
     for (int k = 0; k < KK; k++)
     {
         // cout<<k<<endl;
-        lte += U(Data, theta, k, z) + K(phi, k, lambda);
+        lte += -U(Data, theta, k, z) - K(phi, k, lambda);
     }
     return lte;
 }
@@ -76,7 +76,7 @@ int BuildTree(const curve Data[], pq_point &phi, pq_point &theta,
         float joint = log_total_energy(Data, phi, theta, z, lambda);
         int valid_subtree = (util.log_u <= joint); // Is the new point in the slice?
         util.criterion = util.log_u - joint < delta_max; // Is the simulation wildly inaccurate? // TODO: review
-        util.sum_prob +=  (exp(joint - util.H0)<1)?exp(joint - util.H0):1;
+        util.sum_prob +=  (exp(-joint + util.H0)<1)?exp(-joint + util.H0):1;
         util.n_tree += 1;
         theta_propose = theta;
         phi_propose = phi;

@@ -109,7 +109,7 @@ int main(int argc, char **argv)
                 /*___________________sample theta__________________*/
                 sample_nuts_cpp(Data, theta, z);
                 /*_________________change pi and K____________________________*/
-                RJMH_birth_or_death(Data, theta, &logl, z, stats);
+                // RJMH_birth_or_death(Data, theta, &logl, z, stats);
                 if (in > 1)
                 {
                         ratio = Simulated_Annealing(&logl, &logl_old, theta, theta_old, in, stats);
