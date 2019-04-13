@@ -22,7 +22,7 @@ for(i in N.start:N){
 }
 
 plot.simulate.panel <-function(tt,N=100,warm = 50){
-  dft <- data.frame(X1 = tt[1:N, 1], X2 = tt[1:N, 2])
+  dft <- data.frame(tt[1:N, ])
 df <- data.frame(id=rep(1,N),
                     iter=1:N, 
                     th1 = tt[1:N, 1],
@@ -39,7 +39,7 @@ p1 <- ggplot() +
              aes(th1, th2, color ='1')) +
   geom_segment(data = df, aes(x = th1, xend = th1l, color = '2',
                                  y = th2, yend = th2l)) +
-  stat_ellipse(data = dft, aes(x = th1, y = th2, color = '3'), level = 0.9) +
+  stat_ellipse(data = dft, aes(x = X1, y = X2, color = '3'), level = 0.9) +
   coord_cartesian(xlim = c(1.52,1.6), ylim = c(1.1,1.3)) +
   labs(x = 'theta1', y = 'theta2') +
   scale_color_manual(values = c('red', 'forestgreen','blue'), labels = labs1) +
