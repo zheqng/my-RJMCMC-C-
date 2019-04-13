@@ -40,7 +40,7 @@ p1 <- ggplot() +
   geom_segment(data = df, aes(x = th1, xend = th1l, color = '2',
                                  y = th2, yend = th2l)) +
   stat_ellipse(data = dft, aes(x = X1, y = X2, color = '3'), level = 0.9) +
-  coord_cartesian(xlim = c(1.52,1.6), ylim = c(1.1,1.3)) +
+  coord_cartesian(xlim = range(dft$X1), ylim = c(min(dft$X2)-0.1,max(dft$X2)+0.1 )) +
   labs(x = 'theta1', y = 'theta2') +
   scale_color_manual(values = c('red', 'forestgreen','blue'), labels = labs1) +
   guides(color = guide_legend(override.aes = list(
@@ -48,8 +48,14 @@ p1 <- ggplot() +
   theme(legend.position = 'bottom', legend.title = element_blank())
 
 p1
+# animate(p1 +
+# transition_reveal(id=id, along=iter) +
+# shadow_trail())
 }
 
+plot.simulate.trace<-function(tt){
+  plot()
+}
 samp <- v
 # dim ( samp ) <- c ( dim ( datha.loglik ) , 1 )
 # samp <- aperm ( samp , c ( 1 , 3 , 2 ) )
