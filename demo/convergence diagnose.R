@@ -8,7 +8,13 @@ library('MASS')
 library ('rprojroot')
 library ('rstan')
 
-
+library('coda')
+w.ori = c(1,0.5,10)
+v.ori=c(0.2,1,0.2)
+sigma2.ori = c(0.0025 ,0.001 ,0.0005)
+w.ori = w.ori[c(3,2,1)]
+v.ori = v.ori[c(3,2,1)]
+sigma2.ori = sigma2.ori[c(3,2,1)]
 pi = NULL
 w = NULL
 v = NULL
@@ -20,6 +26,14 @@ for(i in N.start:N){
   v= rbind(v,theta[[i]]$v)
   sigma2 = rbind(sigma2,theta[[i]]$sigma2)
 }
+
+plot.simulate.trace<-function(w,v,sigma2){
+  plot(mcmc(w))
+  cumuplot(mcmc(w), probs = c(0.05,0.5,0.95))
+  plot(mcmc(v))
+  plot(mcmc(sigma2))
+}
+
 
 plot.simulate.panel <-function(tt,N=100,warm = 50){
   dft <- data.frame(tt[1:N, ])

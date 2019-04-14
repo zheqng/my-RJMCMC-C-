@@ -79,8 +79,8 @@ plot.gp.predict<- function(traindata,testdata,predictdata,row.no){
   #
   polygon(c(predictdata$newdata, rev(predictdata$newdata)), c(upper, rev(lower)),col = rgb(127,127,127,120, maxColorValue = 255), border = NA)
   #
-  lines(t(testdata$X[row.no,]),t(testdata$Y[row.no,]),pch=8,col=2,cex=1.5)
-  lines(predictdata$newdata,predictdata$pred.mean,col=4,lwd=1)  
+  points(t(testdata$X[row.no,]),t(testdata$Y[row.no,]),pch=8,col="blue",cex=1.5)
+  points(predictdata$newdata,predictdata$pred.mean,col="red",lwd=1)  
 }
 
 plot.gp.test<-function(traindata,testdata){
