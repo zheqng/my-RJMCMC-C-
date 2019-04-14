@@ -67,14 +67,19 @@ p1
 # shadow_trail())
 }
 
-plot.simulate.trace<-function(tt){
-  plot()
-}
-samp <- v
+calc.convergence.each<-function(tt){
+  N = dim(tt)[1]
 # dim ( samp ) <- c ( dim ( datha.loglik ) , 1 )
 # samp <- aperm ( samp , c ( 1 , 3 , 2 ) )
-res <- monitor ( samp , probs = c ( 0.25,0.5,0.75) , digits_summary = 2 )
+res <- monitor ( tt , probs = c ( 0.25,0.5,0.75) , digits_summary = 2 )
 neff <- res [ , 'n_eff' ]
 reff <-  mean ( neff / ( N  ) )
 
-acf(datha.loglik)
+acf(tt)
+}
+
+calc.convergence<-function(w,v,sigma2){
+  for(i in 1:3){cat(paste("convergence analysis of",i,"th w\n"));calc.convergence.each(w[,i])}
+  for(i in 1:3) {cat(paste("convergence analysis of",i,"th v\n"));calc.convergence.each(v[,i])}
+  for(i in 1:3){cat(paste("convergence analysis of",i,"th sigma2\n")); calc.convergence.each(sigma2[,i])}
+}
