@@ -255,12 +255,12 @@ extern ofstream testfile;
 /********************************************************************************************************************/
 void xixj(mat & K, const vec &X);
 double log_likelihood_micro2(const curve &Dat, const pq_point &theta, int k);
-double log_likelihood2(const curve Data[], const pq_point &m);
+double log_likelihood2(const curve Data[], const pq_point &theta);
 double logsumexp(vec & logP);
-void draw_initial_model(const curve Data[], pq_point &m, double *logl);
-double prop_split(const curve Data[], pq_point &m, int k, int *k1, int *k2);
-double prop_merge(const curve Data[], pq_point &m_old, pq_point &m_new, int *k, int k1, int k2);
-double compute_log_split_ratio(pq_point &m, pq_point &m_split, int k, int k_split1, int k_split2);
-double calc_secondary_moment(const curve &Dat, const pq_point &m, const pq_point &m_new, int k, int k1, int k2);
+void draw_initial_model(const curve Data[], pq_point &theta, double *logl);
+double prop_split(const curve Data[], pq_point &theta, int k, int *k1, int *k2);
+double prop_merge(const curve Data[], pq_point &theta_old, pq_point &theta_new, int *k, int k1, int k2);
+double compute_log_split_ratio(pq_point &theta, pq_point &theta_split, int k, int k_split1, int k_split2);
+double calc_secondary_moment(const curve &Dat, const pq_point &theta, const pq_point &theta_new, int k, int k1, int k2);
 double compute_log_prior_ratio(const pq_point &theta, const pq_point &theta_old);
 void zeros(int c[], int K);

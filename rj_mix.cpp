@@ -65,8 +65,8 @@ struct STATS
 };
 void read_parameters(int argc, char **argv, curve Data[]);
 void write_data(pq_point &theta, double logl, STATS &stats, vec &z, int in);
-void RJMH_birth_or_death(curve Data[], pq_point &m, double *logl, vec &z, STATS &stats);
-void RJMH_split_or_merge(curve Data[], pq_point &m, double *logl, STATS &stats);
+void RJMH_birth_or_death(curve Data[], pq_point &theta, double *logl, vec &z, STATS &stats);
+void RJMH_split_or_merge(curve Data[], pq_point &theta, double *logl, STATS &stats);
 double Simulated_Annealing(double *logl, double *logl_old, pq_point &theta, pq_point &theta_old, int in, STATS &stats);
 
 int main(int argc, char **argv)
@@ -110,6 +110,7 @@ int main(int argc, char **argv)
                 sample_nuts_cpp(Data, theta, z);
                 /*_________________change pi and K____________________________*/
                 // RJMH_birth_or_death(Data, theta, &logl, z, stats);
+                logl = log_likelihood2(Data, theta);
                 if (in > 1)
                 {
                         ratio = Simulated_Annealing(&logl, &logl_old, theta, theta_old, in, stats);
@@ -205,9 +206,9 @@ void write_data(pq_point &theta, double logl, STATS &stats, vec &z, int in)
         }
 }
 
-void RJMH_birth_or_death(curve Data[], pq_point &m, double *logl, vec &z, STATS &stats)
+void RJMH_birth_or_death(curve Data[], pq_point &theta, double *logl, vec &z, STATS &stats)
 {
-        int K = m.w.size();
+        int K = theta.w.size();
         vec label_num = zeros<vec>(K);
         int k;
         for (int i = 0; i < Curve_num; i++)
@@ -218,9 +219,9 @@ void RJMH_birth_or_death(curve Data[], pq_point &m, double *logl, vec &z, STATS 
         uvec empty_component = find(label_num == 0);
         for (uword i = 0; i < (empty_component.n_rows); i++)
         {
-                m.deleteP_seq(empty_component(i) - i);
+                theta.deleteP_seq(empty_component(i) - i);
         }
-        m.pi = normalise((m.pi), 1);
+        theta.pi = normalise((theta.pi), 1);
 
         if (empty_component.n_rows > 0)
         {
@@ -228,18 +229,18 @@ void RJMH_birth_or_death(curve Data[], pq_point &m, double *logl, vec &z, STATS 
         }
         else
                 stats.delete_empty_component = "reserve";
-        *logl = log_likelihood2(Data, m);
+        *logl = log_likelihood2(Data, theta);
 }
 
 /************************************************************************/
 /* Implements the RJ MH move based on split/merge proposal		*/
 /************************************************************************/
-void RJMH_split_or_merge(curve Data[], pq_point &m, double *logl, STATS &stats)
+void RJMH_split_or_merge(curve Data[], pq_point &theta, double *logl, STATS &stats)
 {
         double prop_ratio, add_logratio, ratio;
         double logl_new;
-        pq_point m_new;
-        int k, k1, k2, K = m.w.size();
+        pq_point theta_new;
+        int k, k1, k2, K = theta.w.size();
         double split, accept;
         vec z_new;
         double secondary_moment;
@@ -281,15 +282,15 @@ void RJMH_split_or_merge(curve Data[], pq_point &m, double *logl, STATS &stats)
         if (split)
         {
                 stats.split_or_merge = "split";
-                m_new = m;
+                theta_new = theta;
                 k = (int)floor((double)K * kiss(g));
                 if (k == K)
                         k--;
                 /* Proposes a split move and returns log-likelihood			*/
 
-                logl_new = prop_split(Data, m_new, k, &k1, &k2);
-                secondary_moment = calc_secondary_moment((Data[0]), m, m_new, k, k1, k2);
-                add_logratio = compute_log_split_ratio(m, m_new, k, k1, k2);
+                logl_new = prop_split(Data, theta_new, k, &k1, &k2);
+                secondary_moment = calc_secondary_moment((Data[0]), theta, theta_new, k, k1, k2);
+                add_logratio = compute_log_split_ratio(theta, theta_new, k, k1, k2);
         }
         else
         {
@@ -299,8 +300,8 @@ void RJMH_split_or_merge(curve Data[], pq_point &m, double *logl, STATS &stats)
                 if (k1 == K - 1)
                         k1--;
                 k2 = 1 + k1;
-                logl_new = prop_merge(Data, m, m_new, &k, k1, k2);
-                add_logratio = -compute_log_split_ratio(m_new, m, k, k1, k2);
+                logl_new = prop_merge(Data, theta, theta_new, &k, k1, k2);
+                add_logratio = -compute_log_split_ratio(theta_new, theta, k, k1, k2);
                 // secondary_moment = calc_secondary_moment((Data[0]),m_new,m,k,k1,k2);
         }
 
@@ -321,7 +322,7 @@ void RJMH_split_or_merge(curve Data[], pq_point &m, double *logl, STATS &stats)
         {
                 accept = 1;
                 /* Modify the parameters and log likelihood				*/
-                m = m_new;
+                theta = theta_new;
                 *logl = logl_new;
                 stats.acc_or_rej = "accept";
                 // cout<<"secondary_moment "<<secondary_moment<<endl;

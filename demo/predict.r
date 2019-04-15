@@ -103,6 +103,7 @@ plot.gp.i.predict<-function(traindata,predictdata,i){
   
 }
 # rmse(mu,y.new)
-rmse2 <- function(y,predictdata){
- sum( (y - predictdata$pred.mean)^2)
+rmse <- function(y,predictdata){
+  y = t(as.matrix(y))
+ sqrt(mean( (y - predictdata$pred.mean)^2))
 }
