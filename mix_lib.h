@@ -8,6 +8,14 @@
 // #define RAND_MAX 0x7fff
 #define NSample 100000
 
+#ifdef HAVE_LONG_DOUBLE
+#  define LDOUBLE long double
+#  define EXPL expl
+#else
+#  define LDOUBLE double
+#  define EXPL exp
+#endif
+
 #include "alea.h"
 #include <armadillo>
 #include <iostream>
@@ -133,7 +141,7 @@ struct pq_point
                         v(k) = 0.5 / Gam(0.5, g);
                         sigma2(k) = 0.01 / Gam(10, g);
                 }
-                cout<<endl;
+                // cout<<endl;
                 // pi.print("before normalise pi:");
                 pi = pi/sum(pi);
                 // pi.print("after normalise pi:");
@@ -256,7 +264,7 @@ extern ofstream testfile;
 void xixj(mat & K, const vec &X);
 double log_likelihood_micro2(const curve &Dat, const pq_point &theta, int k);
 double log_likelihood2(const curve Data[], const pq_point &theta);
-double logsumexp(vec & logP);
+double logSumExp(const vec& x);
 void draw_initial_model(const curve Data[], pq_point &theta, double *logl);
 double prop_split(const curve Data[], pq_point &theta, int k, int *k1, int *k2);
 double prop_merge(const curve Data[], pq_point &theta_old, pq_point &theta_new, int *k, int k1, int k2);

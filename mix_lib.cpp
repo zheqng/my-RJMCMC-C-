@@ -66,14 +66,29 @@ double log_likelihood2(const curve Data[], const pq_point &theta)
 																								logP(k) = log_likelihood_micro2(Data[t], theta, k);
 																}
 																logP += log(theta.pi);
-																norm += logsumexp(logP);
-																// testfile<<logP<<endl;
+																norm += logSumExp(logP);
+																// if(theta.pi.size() == 2) theta.print("theta:");
+																// // testfile<<logP<<endl;
+																// cout<<"logP:"<<logP;
+																// cout<<"norm:"<<norm;
 								}
 								return norm;
 }
 
-double logsumexp(vec & logP){
-								return log(sum(exp(logP - logP.max()))) + logP.max();
+double logSumExp(const vec& x) {
+								unsigned int maxi = x.index_max();
+								LDOUBLE maxv = x(maxi);
+								if (!(maxv > -arma::datum::inf)) {
+																return -arma::datum::inf;
+								}
+								LDOUBLE cumsum = 0.0;
+								for (unsigned int i = 0; i < x.n_elem; i++) {
+																if ((i != maxi) & (x(i) > -arma::datum::inf)) {
+																								cumsum += EXPL(x(i) - maxv);
+																}
+								}
+
+								return maxv + log1p(cumsum);
 }
 
 
@@ -234,23 +249,23 @@ double compute_log_split_ratio(pq_point &theta, pq_point &theta_split, int k, in
 								/*________________________ sigmav2s_____________________________*/
 								u[1] = theta_split.sigma2(k_split1) * theta_split.pi(k_split1) / theta.sigma2(k) / theta.pi(k);
 								boost::math::inverse_gamma_distribution<> IG_dist_s(10, 0.01);
-								lograt += log(pdf(IG_dist_s, theta_split.sigma2(k_split1))) + log(pdf(IG_dist_s, theta_split.sigma2(k_split2))) - log(pdf(IG_dist_s, theta.sigma2(k)));
+								lograt += log(pdf(IG_dist_s, theta_split.sigma2(k_split1))) + log(pdf(IG_dist_s, theta_split.sigma2(k_split2))) - log(pdf(IG_dist_s, theta.sigma2(k)))
 
-								-log(6.0) - log(u[1] * (1 - u[1])) + log(theta.sigma2(k)) + 2.0 * log(theta.pi(k)) - log(theta_split.pi(k_split1) * theta_split.pi(k_split2));
+																		-log(6.0) - log(u[1] * (1 - u[1])) + log(theta.sigma2(k)) + 2.0 * log(theta.pi(k)) - log(theta_split.pi(k_split1) * theta_split.pi(k_split2));
 
 								/*________________________v0s________________________________*/
 								u[2] = theta_split.v(k_split1) * theta_split.pi(k_split1) / theta.v(k) / theta.pi(k);
 								boost::math::inverse_gamma_distribution<> IG_dist_v(0.5, 0.5);
-								lograt += log(pdf(IG_dist_v, theta_split.v(k_split1))) + log(pdf(IG_dist_v, theta_split.v(k_split2))) - log(pdf(IG_dist_v, theta.v(k)));
+								lograt += log(pdf(IG_dist_v, theta_split.v(k_split1))) + log(pdf(IG_dist_v, theta_split.v(k_split2))) - log(pdf(IG_dist_v, theta.v(k)))
 
-								-log(6.0) - log(u[2] * (1 - u[2])) + log(theta.v(k)) + 2.0 * log(theta.pi(k)) - log(theta_split.pi(k_split1) * theta_split.pi(k_split2));
+																		-log(6.0) - log(u[2] * (1 - u[2])) + log(theta.v(k)) + 2.0 * log(theta.pi(k)) - log(theta_split.pi(k_split1) * theta_split.pi(k_split2));
 
 								/*________________________w________________________________*/
 								u[3] = theta_split.w(k_split2) / theta.w(k) * (1 - u[2]);
 								boost::math::inverse_gamma_distribution<> IG_dist_w(0.5, 0.5);
-								lograt += log(pdf(IG_dist_w, theta_split.w(k_split1))) + log(pdf(IG_dist_w, theta_split.w(k_split2))) - log(pdf(IG_dist_w, theta.w(k)));
+								lograt += log(pdf(IG_dist_w, theta_split.w(k_split1))) + log(pdf(IG_dist_w, theta_split.w(k_split2))) - log(pdf(IG_dist_w, theta.w(k)))
 
-								-log(6.0) - log(u[3] * (1 - u[3])) + log(theta.w(k)) - log(u[2] * (1 - u[2]));
+																		-log(6.0) - log(u[3] * (1 - u[3])) + log(theta.w(k)) - log(u[2] * (1 - u[2]));
 
 								return lograt;
 }
