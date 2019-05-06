@@ -1,4 +1,5 @@
 # fix k moves
+没有对参数进行排序
 
 - 预测20000步，结果如下
 <img src =  "predict 20000.png" width=100%>
