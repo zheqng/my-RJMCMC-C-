@@ -1,0 +1,22 @@
+SK0=113584957
+SK1=487306701
+SK2=812614905
+NOut=5000
+SubSamp=8
+Data=galaxy.dat
+M=15
+Kappa=6.3
+AlphaVar=0.5
+BetaVar=0.001
+Eta=0.05
+Rho=0.003
+Nu=0.08
+PFixed=0.2
+PBirth=0.2
+PDeath=0.2
+PSplit=0.2
+Gamma_S=1
+Rho_S=0.2
+Nu_S=3
+
+$Id: galaxy.arg,v 1.1 2003/11/28 16:50:19 cappe Exp $

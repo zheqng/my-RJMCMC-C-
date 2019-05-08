@@ -198,3 +198,31 @@ void Gibbs_Sampling_z(const curve Data[], const pq_point &theta, vec &z)
                 z(m) = logp_k.index_max();
         }
 }
+//
+// void label_switch(const curve Data[],const pq_point &theta,vec &z,mat & alloc_old){
+//         int K = theta.w.size();
+//         vec alloc.each(K);
+//         mat alloc(Curve_num,K);
+//         entropies= zeros<vec>(tgamma(K+1));
+//         for (int m=0; m<Curve_num; m++) {
+//                 alloc.each = calc_alloc(Data[m],theta);
+//                 alloc.row(m) = alloc.each;
+//                 for (int i=0; i<tgamma(3+1); i++)
+//                         entropies(i)=entropies(i)+LogLoss(alloc.each[perma[[i]]],alloc_old.row(m));
+//         }
+//         best=order(entropies,decreasing=TRUE)[1]
+// }
+//
+// vec &calc_alloc(const curve Dat,const pq_point &theta){
+//         int K = theta.w.size();
+//         vec alloc.each(K);
+//         for (int m = 0; m < Curve_num; m++)
+//         {
+//                 for (int k = 0; k < K; k++)
+//                 {
+//                         alloc.each(k) =log_likelihood_micro2(Dat, theta, k) + log(theta.pi(k));
+//                 }
+//                 alloc.each = exp(alloc.each - logSumExp(alloc.each))
+//         }
+//         return alloc.each;
+// }

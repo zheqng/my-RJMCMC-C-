@@ -6,6 +6,7 @@ void  xixj(mat & K,const vec &X)
 {
 								int r = X.size();
 								// mat K(r, r);
+								// #pragma omp parallel for
 								for (int i = 0; i < r; ++i)
 								{
 																for (int j = i; j < r; ++j)
@@ -54,24 +55,32 @@ double log_likelihood2(const curve Data[], const pq_point &theta)
 								double norm;
 								vec logP(K);
 								norm = 0.0;
+								// time_t t_start, t_end;
+								// // ofstream TimeFP("time.txt");
+								// double DiffTime;
+								// t_start = time(NULL);
 								// pq_poinSt theta;
+								#pragma omp parallel for
 								for (t = 0; t < Curve_num; t++)
 								{
 																logP = zeros<vec>(K);
-																for (k = 0; k < K; k++)
+																#pragma omp critical
 																{
-																								// write_file(string s, ofstream &myfile)
-																								// theta = m;
-																								// testfile << Data[t].Y << endl;
-																								logP(k) = log_likelihood_micro2(Data[t], theta, k);
+																								// #pragma omp parallel for
+																								for (k = 0; k < K; k++)
+																								{
+
+																																logP(k) = log_likelihood_micro2(Data[t], theta, k);
+																								}
+																								logP += log(theta.pi);
+																								norm += logSumExp(logP);
+																								// printf("ID: %d, Max threads: %d, Num threads: %d \n",omp_get_thread_num(), omp_get_max_threads(), omp_get_num_threads());
 																}
-																logP += log(theta.pi);
-																norm += logSumExp(logP);
-																// if(theta.pi.size() == 2) theta.print("theta:");
-																// // testfile<<logP<<endl;
-																// cout<<"logP:"<<logP;
-																// cout<<"norm:"<<norm;
+
 								}
+								// t_end = time(NULL);
+								// DiffTime = difftime(t_end, t_start);
+								// cout<<DiffTime<<endl;
 								return norm;
 }
 

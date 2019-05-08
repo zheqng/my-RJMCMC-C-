@@ -1,4 +1,4 @@
-
+#include <cmath>
 #include "mix_lib.h"
 
 extern Generator g;

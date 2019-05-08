@@ -57,6 +57,6 @@ testdata$X=(testdata$temp)[(1:testdata$curve.num)*2-1,]
 testdata$Y=testdata$temp[(1:testdata$curve.num)*2,]
 
 N.paper=20000
-plot(datha.K[1:N.half],type='l',xlab="iteration",ylab="components number")
-plot(datha.loglik[1:N.half],type='l',xlab="iteration",ylab="log likelihood")
+plot(datha.K[1:N.paper],type='l',xlab="iteration",ylab="components number")
+plot(datha.loglik[1:N.paper],type='l',xlab="iteration",ylab="log likelihood")
 # min(which(datha.K==2))

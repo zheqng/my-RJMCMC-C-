@@ -15,20 +15,24 @@ double log_total_energy(const curve Data[], pq_point &phi, pq_point &theta, cons
 void leapfrog(const curve Data[], pq_point &phi, pq_point &theta, double epsilon,
               const vec &z, const double lambda)
 {
-        phi.w = phi.w - epsilon * 0.5 * U_partial_w_cpp(Data, theta, z);
-        phi.v = phi.v - epsilon * 0.5 * U_partial_v_cpp(Data, theta, z);
-        phi.sigma2 = phi.sigma2 - epsilon * 0.5 * U_partial_sigma2_cpp(Data, theta, z);
+        // #pragma omp critical
+        {
 
-        theta.w = theta.w + epsilon * phi.w / lambda;
-        theta.v = theta.v + epsilon * phi.v / lambda;
-        theta.sigma2 = theta.sigma2 + epsilon * phi.sigma2 / lambda;
 
-        theta.positive_reflect();
+                phi.w = phi.w - epsilon * 0.5 * U_partial_w_cpp(Data, theta, z);
+                phi.v = phi.v - epsilon * 0.5 * U_partial_v_cpp(Data, theta, z);
+                phi.sigma2 = phi.sigma2 - epsilon * 0.5 * U_partial_sigma2_cpp(Data, theta, z);
 
-        phi.w = phi.w - epsilon * 0.5 * U_partial_w_cpp(Data, theta, z);
-        phi.v = phi.v - epsilon * 0.5 * U_partial_v_cpp(Data, theta, z);
-        phi.sigma2 = phi.sigma2 - epsilon * 0.5 * U_partial_sigma2_cpp(Data, theta, z);
+                theta.w = theta.w + epsilon * phi.w / lambda;
+                theta.v = theta.v + epsilon * phi.v / lambda;
+                theta.sigma2 = theta.sigma2 + epsilon * phi.sigma2 / lambda;
 
+                theta.positive_reflect();
+
+                phi.w = phi.w - epsilon * 0.5 * U_partial_w_cpp(Data, theta, z);
+                phi.v = phi.v - epsilon * 0.5 * U_partial_v_cpp(Data, theta, z);
+                phi.sigma2 = phi.sigma2 - epsilon * 0.5 * U_partial_sigma2_cpp(Data, theta, z);
+        }
 }
 
 // U-Turn criterion in the generalized form applicable to Riemanian spaces

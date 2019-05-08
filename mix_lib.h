@@ -21,7 +21,7 @@
 #include <iostream>
 #include <boost/math/distributions/lognormal.hpp>
 #include <boost/math/distributions/inverse_gamma.hpp>
-
+#include <omp.h>  
 using namespace std;
 using namespace arma;
 
