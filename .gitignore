@@ -1,0 +1,8 @@
+*.o
+lab_report_1
+
+demo/.Rhistory
+.Rhistory
+demo/gmon.out
+demo/output_file
+.vscode/ipch
