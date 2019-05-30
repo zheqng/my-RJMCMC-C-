@@ -107,7 +107,7 @@ struct pq_point
 
                 for (int k = 0; k < K; k++)
                 {
-                        w(k) = 0.5 / Gam(0.5, g);
+                    w(k) = 0.5 / Gam(0.5, g);
                         v(k) = 0.5 / Gam(0.5, g);
                         sigma2(k) = 0.01 / Gam(10, g);
                 }
@@ -137,7 +137,7 @@ struct pq_point
                         double tmp = kiss(g);
                         // cout<< tmp<<" ";
                         pi(k) = tmp;
-                        w(k) = 0.5 / Gam(0.5, g);
+                         w(k) = 0.5 / Gam(0.5, g);
                         v(k) = 0.5 / Gam(0.5, g);
                         sigma2(k) = 0.01 / Gam(10, g);
                 }

@@ -2,44 +2,43 @@
 /*mix_lib: Library of functions used by rj_mix. */
 /********************************************************************************************************************/
 #include "mix_lib.h"
-void  xixj(mat & K,const vec &X)
+void xixj(mat &K, const vec &X)
 {
-								int r = X.size();
-								// mat K(r, r);
-								// #pragma omp parallel for
-								for (int i = 0; i < r; ++i)
-								{
-																for (int j = i; j < r; ++j)
-																{
-																								K(j,i) = pow(X(j) - X(i),2.0);
-																								K(i,j) = K(j,i);
-																}
-								}
-
+	int r = X.size();
+	// mat K(r, r);
+	// #pragma omp parallel for
+	for (int i = 0; i < r; ++i)
+	{
+		for (int j = i; j < r; ++j)
+		{
+			K(j, i) = pow(X(j) - X(i), 2.0);
+			K(i, j) = K(j, i);
+		}
+	}
 }
 
 double log_likelihood_micro2(const curve &Dat, const pq_point &theta, int k)
 {
 
-								int r = Dat.X.size();
-								mat cov(r, r), SquareX(r, r);
+	int r = Dat.X.size();
+	mat cov(r, r), SquareX(r, r);
 
-								// caculate cov
+	// caculate cov
 
-								// vec colones = ones<vec>(r);
-								// rowvec rowones = ones<rowvec>(r);
-								mat EYE = eye<mat>(r, r);
-								xixj(SquareX,Dat.X);
-								// testfile<<SquareX;
-								// square(Dat.X * rowones - colones * trans(Dat.X));
+	// vec colones = ones<vec>(r);
+	// rowvec rowones = ones<rowvec>(r);
+	mat EYE = eye<mat>(r, r);
+	xixj(SquareX, Dat.X);
+	// testfile<<SquareX;
+	// square(Dat.X * rowones - colones * trans(Dat.X));
 
-								cov = theta.v(k) * exp(-SquareX * theta.w(k) / 2.0) + EYE * theta.sigma2(k);
-								// testfile << cov << endl;
-								vec tmp(1);
-								// testfile<<(cov * solve(cov, Dat.Y))<<endl;
-								tmp = -trans(Dat.Y) * solve(cov, Dat.Y) / 2.0 - (double)r / 2.0 * log(2.0 * PI) - 1.0 / 2.0 * log(fabs(det(cov)));
+	cov = theta.v(k) * exp(-SquareX * theta.w(k) / 2.0) + EYE * theta.sigma2(k);
+	// testfile << cov << endl;
+	vec tmp(1);
+	// testfile<<(cov * solve(cov, Dat.Y))<<endl;
+	tmp = -trans(Dat.Y) * solve(cov, Dat.Y) / 2.0 - (double)r / 2.0 * log(2.0 * PI) - 1.0 / 2.0 * log(fabs(det(cov)));
 
-								return tmp(0);
+	return tmp(0);
 }
 // more than one operator "/" matches these operands:
 //  -- function template "arma::enable_if2<arma::is_arma_type<T1>::value,
@@ -50,56 +49,58 @@ double log_likelihood_micro2(const curve &Dat, const pq_point &theta, int k)
 
 double log_likelihood2(const curve Data[], const pq_point &theta)
 {
-								int t, k;
-								int K = theta.w.size();
-								double norm;
-								vec logP(K);
-								norm = 0.0;
-								// time_t t_start, t_end;
-								// // ofstream TimeFP("time.txt");
-								// double DiffTime;
-								// t_start = time(NULL);
-								// pq_poinSt theta;
-								#pragma omp parallel for
-								for (t = 0; t < Curve_num; t++)
-								{
-																logP = zeros<vec>(K);
-																#pragma omp critical
-																{
-																								// #pragma omp parallel for
-																								for (k = 0; k < K; k++)
-																								{
+	int t, k;
+	int K = theta.w.size();
+	double norm;
+	vec logP(K);
+	norm = 0.0;
+// time_t t_start, t_end;
+// // ofstream TimeFP("time.txt");
+// double DiffTime;
+// t_start = time(NULL);
+// pq_poinSt theta;
+#pragma omp parallel for
+	for (t = 0; t < Curve_num; t++)
+	{
+		logP = zeros<vec>(K);
+#pragma omp critical
+		{
+			 #pragma omp parallel for
+			for (k = 0; k < K; k++)
+			{
 
-																																logP(k) = log_likelihood_micro2(Data[t], theta, k);
-																								}
-																								logP += log(theta.pi);
-																								norm += logSumExp(logP);
-																								// printf("ID: %d, Max threads: %d, Num threads: %d \n",omp_get_thread_num(), omp_get_max_threads(), omp_get_num_threads());
-																}
-
-								}
-								// t_end = time(NULL);
-								// DiffTime = difftime(t_end, t_start);
-								// cout<<DiffTime<<endl;
-								return norm;
+				logP(k) = log_likelihood_micro2(Data[t], theta, k);
+			}
+			logP += log(theta.pi);
+			norm += logSumExp(logP);
+			// printf("ID: %d, Max threads: %d, Num threads: %d \n",omp_get_thread_num(), omp_get_max_threads(), omp_get_num_threads());
+		}
+	}
+	// t_end = time(NULL);
+	// DiffTime = difftime(t_end, t_start);
+	// cout<<DiffTime<<endl;
+	return norm;
 }
 
-double logSumExp(const vec& x) {
-								unsigned int maxi = x.index_max();
-								LDOUBLE maxv = x(maxi);
-								if (!(maxv > -arma::datum::inf)) {
-																return -arma::datum::inf;
-								}
-								LDOUBLE cumsum = 0.0;
-								for (unsigned int i = 0; i < x.n_elem; i++) {
-																if ((i != maxi) & (x(i) > -arma::datum::inf)) {
-																								cumsum += EXPL(x(i) - maxv);
-																}
-								}
+double logSumExp(const vec &x)
+{
+	unsigned int maxi = x.index_max();
+	LDOUBLE maxv = x(maxi);
+	if (!(maxv > -arma::datum::inf))
+	{
+		return -arma::datum::inf;
+	}
+	LDOUBLE cumsum = 0.0;
+	for (unsigned int i = 0; i < x.n_elem; i++)
+	{
+		if ((i != maxi) & (x(i) > -arma::datum::inf))
+		{
+			cumsum += EXPL(x(i) - maxv);
+		}
+	}
 
-								return maxv + log1p(cumsum);
+	return maxv + log1p(cumsum);
 }
-
 
 /************************************************************************/
 /* Initializes the parameters of the model (and returns the scaling	*/
@@ -110,11 +111,11 @@ double logSumExp(const vec& x) {
 void draw_initial_model(const curve Data[], pq_point &theta, double *logl)
 {
 
-								/* Start by drawing from prior					*/
+	/* Start by drawing from prior					*/
 
-								theta.draw_from_prior(g);
+	theta.draw_from_prior(g);
 
-								*logl = log_likelihood2(Data, theta);
+	*logl = log_likelihood2(Data, theta);
 }
 
 /************************************************************************/
@@ -123,57 +124,56 @@ void draw_initial_model(const curve Data[], pq_point &theta, double *logl)
 /************************************************************************/
 double prop_split(const curve Data[], pq_point &theta, int k, int *k1, int *k2)
 {
-								double u[4];
-								double logl;
-								pq_point Elem_mix1(1), Elem_mix2(1);
-								int K = theta.w.size();
+	double u[4];
+	double logl;
+	pq_point Elem_mix1(1), Elem_mix2(1);
+	int K = theta.w.size();
 
-								if (K >= Curve_num)
-								{
+	if (K >= Curve_num)
+	{
 
-																exit(1);
-								}
-								if ((k < 0) || (k >= K))
-								{
-																exit(1);
-								}
+		exit(1);
+	}
+	if ((k < 0) || (k >= K))
+	{
+		exit(1);
+	}
 
-								u[0] = Beta(2, 2, g);
-								u[1] = Beta(2, 2, g);
-								u[2] = Beta(2, 2, g);
-								u[3] = Beta(2, 2, g);
+	u[0] = Beta(2.0, 2.0, g);
+	u[1] = Beta(1.0, 1.0, g);
+	u[2] = Beta(2.0, 2.0, g);
+	u[3] = Beta(2.0, 2.0, g);
 
-								/*_____________________________reallocate theta___________________*/
-								double pi_k = theta.pi(k);
-								Elem_mix1.pi(0) = u[0] * theta.pi(k);
-								Elem_mix2.pi(0) = (1.0 - u[0]) * theta.pi(k);
+	/*_____________________________reallocate theta___________________*/
+	double pi_k = theta.pi(k);
+	Elem_mix1.pi(0) = u[0] * theta.pi(k);
+	Elem_mix2.pi(0) = (1.0 - u[0]) * theta.pi(k);
 
-								Elem_mix1.sigma2(0) = u[1] * theta.sigma2(k) * pi_k / Elem_mix1.pi(0);
-								Elem_mix2.sigma2(0) = (1.0 - u[1]) * theta.sigma2(k) * pi_k / Elem_mix2.pi(0);
+	Elem_mix1.sigma2(0) = u[1] * theta.sigma2(k) * pi_k / Elem_mix1.pi(0);
+	Elem_mix2.sigma2(0) = (1.0 - u[1]) * theta.sigma2(k) * pi_k / Elem_mix2.pi(0);
 
-								Elem_mix1.v(0) = u[2] * theta.v(k) * pi_k / Elem_mix1.pi(0);
-								Elem_mix2.v(0) = (1.0 - u[2]) * theta.v(k) * pi_k / Elem_mix2.pi(0);
+	Elem_mix1.v(0) = u[2] * theta.v(k) * pi_k / Elem_mix1.pi(0);
+	Elem_mix2.v(0) = (1.0 - u[2]) * theta.v(k) * pi_k / Elem_mix2.pi(0);
 
-								Elem_mix1.w(0) = (1.0 - u[3]) / u[2] * theta.w(k);
-								Elem_mix2.w(0) = u[3] / (1.0 - u[2]) * theta.w(k);
+	Elem_mix1.w(0) = (1.0 - u[3]) / u[2] * theta.w(k);
+	Elem_mix2.w(0) = u[3] / (1.0 - u[2]) * theta.w(k);
 
-								/*____________________________insert w[k]________________________*/
-								// m.deleteP_seq(k);
-								*k1 = theta.w.size();
-								*k2 = (*k1) + 1;
-								theta.insertPre_seq(*k1, Elem_mix1);							
-								theta.insertPre_seq(*k2, Elem_mix2);
-								
-								theta.deleteP_seq(k);
-								
+	/*____________________________insert w[k]________________________*/
+	// m.deleteP_seq(k);
+	*k1 = theta.w.size();
+	*k2 = (*k1) + 1;
+	theta.insertPre_seq(*k1, Elem_mix1);
+	theta.insertPre_seq(*k2, Elem_mix2);
 
-								*k1 = (*k1) - 1;
-								*k2 = (*k2) - 1;
+	theta.deleteP_seq(k);
 
-								theta.pi = normalise((theta.pi), 1);
+	*k1 = (*k1) - 1;
+	*k2 = (*k2) - 1;
 
-								logl = log_likelihood2(Data, theta);
-								return logl;
+	theta.pi = normalise((theta.pi), 1);
+
+	logl = log_likelihood2(Data, theta);
+	return logl;
 }
 
 /************************************************************************/
@@ -182,52 +182,51 @@ double prop_split(const curve Data[], pq_point &theta, int k, int *k1, int *k2)
 /************************************************************************/
 double prop_merge(const curve Data[], pq_point &theta_old, pq_point &theta_new, int *k, int k1, int k2)
 {
-								int i_old, i_new;
-								double logl;
-								pq_point Elem_mix(1);
-								if (theta_old.w.size() <= 1)
-								{
+	int i_old, i_new;
+	double logl;
+	pq_point Elem_mix(1);
+	if (theta_old.w.size() <= 1)
+	{
 
-																exit(1);
-								}
-								if ((k1 < 0) || (k2 < 0) || (k1 >= theta_old.w.size()) || (k2 >= theta_old.w.size()) || (k1 == k2))
-								{
+		exit(1);
+	}
+	if ((k1 < 0) || (k2 < 0) || (k1 >= theta_old.w.size()) || (k2 >= theta_old.w.size()) || (k1 == k2))
+	{
 
-																exit(1);
-								}
+		exit(1);
+	}
 
-								/* Merge classes k1 and k2 in the last one of the new model		*/
-								Elem_mix.pi(0) = theta_old.pi(k1) + theta_old.pi(k2);
+	/* Merge classes k1 and k2 in the last one of the new model		*/
+	Elem_mix.pi(0) = theta_old.pi(k1) + theta_old.pi(k2);
 
-								Elem_mix.sigma2(0) = (theta_old.pi(k1) * theta_old.sigma2(k1) +
-																														theta_old.pi(k2) * theta_old.sigma2(k2)) /
-																													Elem_mix.pi(0);
+	Elem_mix.sigma2(0) = (theta_old.pi(k1) * theta_old.sigma2(k1) +
+						  theta_old.pi(k2) * theta_old.sigma2(k2)) /
+						 Elem_mix.pi(0);
 
-								Elem_mix.v(0) = (theta_old.pi(k1) * theta_old.v(k1) +
-																									theta_old.pi(k2) * theta_old.v(k2)) /
-																								Elem_mix.pi(0);
+	Elem_mix.v(0) = (theta_old.pi(k1) * theta_old.v(k1) +
+					 theta_old.pi(k2) * theta_old.v(k2)) /
+					Elem_mix.pi(0);
 
-								Elem_mix.w(0) = (theta_old.pi(k1) * theta_old.v(k1) * theta_old.w(k1) +
-																									theta_old.pi(k2) * theta_old.v(k2) * theta_old.w(k2)) /
-																								Elem_mix.pi(0) / Elem_mix.v(0);
+	Elem_mix.w(0) = (theta_old.pi(k1) * theta_old.v(k1) * theta_old.w(k1) +
+					 theta_old.pi(k2) * theta_old.v(k2) * theta_old.w(k2)) /
+					Elem_mix.pi(0) / Elem_mix.v(0);
 
-								/*_______________________merge_________________________*/
-								theta_new = theta_old;
+	/*_______________________merge_________________________*/
+	theta_new = theta_old;
 
-								*k = theta_new.w.size();
-								theta_new.insertPre_seq(*k, Elem_mix);
+	*k = theta_new.w.size();
+	theta_new.insertPre_seq(*k, Elem_mix);
 
-								//delete k1 and k2								
-								theta_new.deleteP_seq(k1);
-								theta_new.deleteP_seq(k2);
-								
+	//delete k1 and k2
+	theta_new.deleteP_seq(k1);
+	theta_new.deleteP_seq(k2);
 
-								*k = (*k) - 2;
-								theta_new.pi = normalise(theta_new.pi, 1);
+	*k = (*k) - 2;
+	theta_new.pi = normalise(theta_new.pi, 1);
 
-								/* Compute new log-likelihood						*/
-								logl = log_likelihood2(Data, theta_new);
-								return logl;
+	/* Compute new log-likelihood						*/
+	logl = log_likelihood2(Data, theta_new);
+	return logl;
 }
 
 /************************************************************************/
@@ -249,7 +248,8 @@ double compute_log_split_ratio(pq_point &theta, pq_point &theta_split, int k, in
 								boost::math::inverse_gamma_distribution<> IG_dist_s(10, 0.01);
 								lograt += log(pdf(IG_dist_s, theta_split.sigma2(k_split1))) + log(pdf(IG_dist_s, theta_split.sigma2(k_split2))) - log(pdf(IG_dist_s, theta.sigma2(k)))
 
-																		-log(6.0) - log(u[1] * (1 - u[1])) + log(theta.sigma2(k)) + 2.0 * log(theta.pi(k)) - log(theta_split.pi(k_split1) * theta_split.pi(k_split2));
+																		//-log(6.0) - log(u[1] * (1 - u[1])) 
+																		+ log(theta.sigma2(k)) + 2.0 * log(theta.pi(k)) - log(theta_split.pi(k_split1) * theta_split.pi(k_split2));
 
 								/*________________________v0s________________________________*/
 								u[2] = theta_split.v(k_split1) * theta_split.pi(k_split1) / theta.v(k) / theta.pi(k);
@@ -270,27 +270,27 @@ double compute_log_split_ratio(pq_point &theta, pq_point &theta_split, int k, in
 
 double calc_secondary_moment(const curve &Dat, const pq_point &theta, const pq_point &theta_new, int k, int k1, int k2)
 {
-								double secondary_moment = 0.0;
-								// evaluate the covariance for the mth batch/curve
-								// there are totally Nm points on this batch/curve
-								int r = Nm;
-								mat cov(r, r), cov1(r, r), cov2(r, r), DiffCov(r, r), SquareX(r, r);
+	double secondary_moment = 0.0;
+	// evaluate the covariance for the mth batch/curve
+	// there are totally Nm points on this batch/curve
+	int r = Nm;
+	mat cov(r, r), cov1(r, r), cov2(r, r), DiffCov(r, r), SquareX(r, r);
 
-								// vec colones = ones<vec>(r);
-								// rowvec rowones = ones<rowvec>(r);
-								mat EYE = eye<mat>(r, r);
+	// vec colones = ones<vec>(r);
+	// rowvec rowones = ones<rowvec>(r);
+	mat EYE = eye<mat>(r, r);
 
-								xixj(SquareX,Dat.X);
-								//  square(Dat.X * rowones - colones * trans(Dat.X));
+	xixj(SquareX, Dat.X);
+	//  square(Dat.X * rowones - colones * trans(Dat.X));
 
-								cov = theta.v(k) * exp(-SquareX * theta.w(k) / 2.0);
-								cov = cov + EYE * theta.sigma2(k);
-								cov1 = theta_new.v(k1) * exp(-SquareX * theta_new.w(k1) / 2.0) + EYE * theta_new.sigma2(k1);
-								cov2 = theta_new.v(k2) * exp(-SquareX * theta_new.w(k2) / 2.0) + EYE * theta_new.sigma2(k2);
+	cov = theta.v(k) * exp(-SquareX * theta.w(k) / 2.0);
+	cov = cov + EYE * theta.sigma2(k);
+	cov1 = theta_new.v(k1) * exp(-SquareX * theta_new.w(k1) / 2.0) + EYE * theta_new.sigma2(k1);
+	cov2 = theta_new.v(k2) * exp(-SquareX * theta_new.w(k2) / 2.0) + EYE * theta_new.sigma2(k2);
 
-								DiffCov = theta.pi(k) * cov - theta_new.pi(k1) * cov1 - theta_new.pi(k2) * cov2;
+	DiffCov = theta.pi(k) * cov - theta_new.pi(k1) * cov1 - theta_new.pi(k2) * cov2;
 
-								return secondary_moment = norm(DiffCov, "fro");
+	return secondary_moment = norm(DiffCov, "fro");
 }
 
 double compute_log_prior_ratio(const pq_point &theta, const pq_point &theta_old)
@@ -343,10 +343,11 @@ double compute_log_prior_ratio(const pq_point &theta, const pq_point &theta_old)
 								return lograt;
 }
 
+
 void zeros(int c[], int K)
 {
-								for (int k = 0; k < K; k++)
-								{
-																c[k] = 0;
-								}
+	for (int k = 0; k < K; k++)
+	{
+		c[k] = 0;
+	}
 }

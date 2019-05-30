@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
         read_parameters(argc, argv, Data);
 
         draw_initial_model(Data, theta, &logl);
-
+// theta.print("theta:");
         Gibbs_Sampling_z(Data, theta,z);
         write_data(theta, logl, stats,z,0);
 

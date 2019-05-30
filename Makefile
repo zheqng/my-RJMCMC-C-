@@ -51,10 +51,10 @@ FINAL = -DARMA_NO_DEBUG
 ## Not recommended unless your code has been first thoroughly tested!
 OMPFLAGS = -fopenmp
 
+#export OMP_NUM_THREADS=8
 
-
-CXXFLAGSNP = -std=c++14  $(DEBUG) $(FINAL) $(OPTNP) $(EXTRA_OPT) 
-CXXFLAGS = -std=c++14  $(DEBUG) $(FINAL) $(OPT) $(EXTRA_OPT)$(OMPFLAGS)
+CXXFLAGSNP = -std=c++14  $(DEBUG) $(FINAL) $(OPTNP) $(EXTRA_OPT)
+CXXFLAGS = -std=c++14  $(DEBUG) $(FINAL) $(OPT) $(EXTRA_OPT)
 
 #OBJECTS = rj_mix.o RWMH.o HMC.o mix_lib.o alea.o
 
@@ -64,31 +64,30 @@ CXXFLAGS = -std=c++14  $(DEBUG) $(FINAL) $(OPT) $(EXTRA_OPT)$(OMPFLAGS)
 all: rj_mix
 
 rj_mix:  nuts.o HMC.o mix_lib.o alea.o
-	$(CXX) $(CXXFLAGSNP) -fopenmp -g   -o  $@ $(@).cpp $^  $(LIB_FLAGS)
+	$(CXX) $(CXXFLAGS) $(OMPFLAGS)   -o  $@ $(@).cpp $^  $(LIB_FLAGS)
 
 test_kiss: mix_lib.o alea.o
-	$(CXX) $(CXXFLAGSNP)  -g   -o  $@ $(@).cpp $^  $(LIB_FLAGS)
+	$(CXX) $(CXXFLAGS)     -o  $@ $(@).cpp $^  $(LIB_FLAGS)
 
-# rj_mix.o:rj_mix.cpp RWMH.h
-# RWMH.o: RWMH.cpp RWMH.h HMC.h
+
 nuts.o: nuts.cpp nuts.h
 HMC.o: HMC.cpp HMC.h
 mix_lib.o:mix_lib.cpp mix_lib.h
 alea.o: alea.cpp alea.h
 
 nuts.o:
-		$(CXX) $(CXXFLAGSNP)    -c $(@:.o=.cpp) -o $@    $(LIB_FLAGS)
+		$(CXX) $(CXXFLAGS)   -c $(@:.o=.cpp) -o $@    $(LIB_FLAGS)
 
- HMC.o mix_lib.o  alea.o:
-	$(CXX) $(CXXFLAGSNP)   -g -c $(@:.o=.cpp) -o $@    $(LIB_FLAGS)
+HMC.o:
+	$(CXX) $(CXXFLAGS)    -c $(@:.o=.cpp) -o $@    $(LIB_FLAGS)
 
-# demo : traindata.dat traindata.arg ../rj_mix
-	# ../rj_mix traindata
-#	../ct_mix galaxy
+mix_lib.o:
+	$(CXX) $(CXXFLAGS)   -c $(@:.o=.cpp) -o $@    $(LIB_FLAGS)
 
 
-# clean :
-	# rm -f *.sts *.txt
+alea.o:
+	$(CXX) $(CXXFLAGS)    -c $(@:.o=.cpp) -o $@    $(LIB_FLAGS)
+
 
 .PHONY: clean
 

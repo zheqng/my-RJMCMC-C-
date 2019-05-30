@@ -18,7 +18,7 @@ double U(const curve Data[], const pq_point &theta, int k, const vec &z)
                         l_pk += log_likelihood_micro2(Data[m], theta, k);
                 }
         }
-        boost::math::inverse_gamma_distribution<> IG_dist_w(0.5, 0.5);
+         boost::math::inverse_gamma_distribution<> IG_dist_w(0.5, 0.5);
         boost::math::inverse_gamma_distribution<> IG_dist_v(0.5, 0.5);
         boost::math::inverse_gamma_distribution<> IG_dist_s(10, 0.01);
 
@@ -114,6 +114,7 @@ vec U_partial_v_cpp(const curve Data[], const pq_point &theta, const vec &z)
         return u_partial_v;
 }
 
+
 /*U0 partial sigmav2*/
 double logP_partial_sigma2_percurve_cpp(const curve &Dat, const pq_point &theta, int k)
 {
@@ -151,7 +152,7 @@ vec U_partial_sigma2_cpp(const curve Data[], const pq_point &theta, const vec &z
                         }
                 }
         }
-        u_partial_sigma2 += (0.5 + 1) / theta.sigma2 - 0.5 / square(theta.sigma2);
+        u_partial_sigma2 += (10.0 + 1) / theta.sigma2 - 0.01 / square(theta.sigma2);
         return u_partial_sigma2;
 }
 

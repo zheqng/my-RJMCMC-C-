@@ -58,15 +58,15 @@ log.likelihood <-function(traindata,thet){
   }
   return(norm)
 }
-predict.gp<-function(x,y,x.new,y.new,thet,k){
+predict.gp<-function(x,y,x.new,thet,k){
   K.star<-exp.cov(x,x.new,thet,k) 
   K<-exp.cov.noise(x,thet,k)
   K.inv <-ginv(K)
   mu<- t(K.star)%*% K.inv %*% t(y)
   sigma2<-exp.cov(x.new,x.new,thet,k) - t(K.star) %*% K.inv %*% (K.star)
   sigma2<-diag(sigma2)
-  correlation<-cor(mu,t(y.new))
-  result=c(list('pred.mean'=mu,'pred.sd'=sqrt(sigma2),'newdata'=x.new,'correlation'=correlation))
+  # correlation<-cor(mu,t(y.new))
+  result=c(list('pred.mean'=mu,'pred.sd'=sqrt(sigma2),'newdata'=x.new))
   
   return(result)
 }
@@ -75,14 +75,14 @@ plot.gp.predict<- function(traindata,testdata,predictdata,row.no){
   
   upper=predictdata$pred.mean+1.96*(predictdata$pred.sd);
   lower=predictdata$pred.mean-1.96*(predictdata$pred.sd);
-  plot(-100,-100,col=0,xlim=range(traindata$X[row.no,],testdata$X[row.no,]),ylim=range(upper,lower,traindata$Y[row.no,]),type='l', xlab="input ",ylab="response")
+  plot(-100,-100,col=0,xlim=range(traindata$X[row.no,],testdata$X),ylim=range(upper,lower,traindata$Y[row.no,]),type='l', xlab="input ",ylab="response")
   #
   polygon(c(predictdata$newdata, rev(predictdata$newdata)), c(upper, rev(lower)),col = rgb(127,127,127,120, maxColorValue = 255), border = NA)
   #
-  lines(t(testdata$X[row.no,]),t(testdata$Y[row.no,]),pch=8,col="blue",cex=1.5)
+  # lines(t(traindata$X[row.no,]),t(traindata$Y[row.no,]),pch=8,col="blue",cex=1.5)
   lines(predictdata$newdata,predictdata$pred.mean,col="red",lwd=1)  
-  points(t(testdata$X[row.no,]),t(testdata$Y[row.no,]),pch=8,col="blue",cex=0.5)
-  points(predictdata$newdata,predictdata$pred.mean,col="red",lwd=1,cex = 0.5)  
+  points(t(traindata$X[row.no,]),t(traindata$Y[row.no,]),pch=8,col="blue",cex=0.5)
+  # points(predictdata$newdata,predictdata$pred.mean,col="red",lwd=1,cex = 0.5)  
 }
 
 plot.gp.test<-function(traindata,testdata){
@@ -127,7 +127,7 @@ predict.gp.ave<-function(traindata,testdata,theta,N.paper,m,lag = 10){
     z.tmp=calc.z(traindata,theta[[i]])
     z = rbind(z,z.tmp)
     k = z.tmp[m]
-    predictdata<-predict.gp(traindata$X[m,],traindata$Y[m,],testdata$X[m,],testdata$Y[m,],theta[[i]],k)
+    predictdata<-predict.gp(traindata$X[m,],traindata$Y[m,],testdata$X,theta[[i]],k)
     pred.mean<-pred.mean + predictdata$pred.mean
     pred.var <- pred.var + (predictdata$pred.sd)^2 + (predictdata$pred.mean)^2 
     # print(i)
@@ -135,7 +135,7 @@ predict.gp.ave<-function(traindata,testdata,theta,N.paper,m,lag = 10){
   pred.mean = pred.mean/length(batch)
   pred.var = pred.var/length(batch) - (pred.mean)^2
   pred.sd = sqrt( pred.var)
-  newdata = testdata$X[m,]
+  newdata = testdata$X
   # print(m)
   # }
   result=c(list('pred.mean'=pred.mean,'pred.sd'=pred.sd,'newdata'=newdata,'z'=z))
@@ -143,7 +143,7 @@ predict.gp.ave<-function(traindata,testdata,theta,N.paper,m,lag = 10){
   return(result)
 }
 
-z.ave<-function(traindata,theta,N.paper,m,lag = 1){
+z.ave<-function(traindata,theta,N.paper,lag = 1){
   # N = dim(z)[1]
   N = N.paper
   warm = floor(N/2)
@@ -167,8 +167,8 @@ calc.z<-function(traindata,thet){
 plot.z<-function(z){
   color=rainbow(7)
   N.tmp=dim(z)[1]
-  plot(-100,-100,xlim=c(1,20000),ylim = c(1,35))
-  for(i in 1:35){
+  plot(-100,-100,xlim=c(1,20000),ylim = c(1,8))
+  for(i in 1:8){
     for(iter in 1:dim(z)[1])
     points(ceiling(iter/N.tmp*20000),i,col=color[z[iter,i]],pch=8,cex=0.5)
     

@@ -50,7 +50,8 @@ traindata$curve.num = dim(traindata$temp)[1]/2
 traindata$X=(traindata$temp)[(1:traindata$curve.num)*2-1,]
 traindata$Y=traindata$temp[(1:traindata$curve.num)*2,]
 
-# testdata = list("temp","X","Y","curve.num")
+testdata = list("X")
+# testdata$X = time.new
 # testdata$temp =read.table("te.dat")
 # testdata$curve.num = dim(testdata$temp)[1]/2
 # testdata$X=(testdata$temp)[(1:testdata$curve.num)*2-1,]
