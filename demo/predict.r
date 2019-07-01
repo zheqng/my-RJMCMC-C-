@@ -174,3 +174,24 @@ plot.z<-function(z){
     
   }
 }
+
+plot.label<-function(totaldata,z){
+  color_label = c("red","blue","yellow","green")
+  # plot(1:73,temperature[,16],col = color_label[z[16]],type = "l",ylim = range(temperature))
+  plot(-100,-100,xlim=c(0,73),ylim=range(totaldata$Y),xlab=" ",ylab=" ")
+  for (ii in 1:(35))
+    lines(1:73,totaldata$Y[ii,],col = color_label[z[ii]],type = "l")
+  title('classification result')
+}
+
+plot.iter.label<-function(totaldata,z.iter){
+color_label = c("red","blue","yellow","green")
+plot(-100,-100,xlim=c(0,73),ylim=range(tmp),xlab=" ",ylab=" ")
+choose.curve = c(1,2,16,17,25,26,33,34)
+jj=1
+lastiter=dim(z.iter)[1]
+for (ii in choose.curve){
+  lines(1:73,totaldata[,ii],col = color_label[z.iter[lastiter,jj]],type = "l")
+  jj=jj+1
+}
+}

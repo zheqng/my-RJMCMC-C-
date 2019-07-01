@@ -1,6 +1,6 @@
 rm(list=ls())
-setwd('/home/zheqng/src/RJMCMC-my-C/canadaweather/demo/')
-# setwd("/media/zheqng/Seagate Backup Plus Drive/zheqng@nwu/src/RJMCMC-my-C/simu1/canadaweather/")
+# setwd('/home/zheqng/src/RJMCMC-my-C/canadaweather/demo/')
+setwd("/media/zheqng/Seagate Backup Plus Drive/zheqng@nwu/src/RJMCMC-my-C/simu1/canadaweather/demo")
 library("fda")
 library("GPFDA")
 library("ggplot2")
@@ -13,7 +13,7 @@ for(m in 1:73){
 }
 index = 1:73
 train.index=sample(index,floor(73/2))
-# tmp= tmp - t(matrix( rep(apply(tmp,2,mean),73),35,73))
+tmp= tmp - t(matrix( rep(apply(tmp,2,mean),73),35,73))
   temperature[,2*(1:35)-1] = 1:73
   temperature[,2*(1:35)]=tmp
 

@@ -11,5 +11,8 @@
 
 <img src =  "register.png" width=100%>
 
+聚类的结果
+<img src =  "classification.png" width=100%>
+但聚类的结果和专家统计结果不同
 有两类两类划分为一类。
 - 考虑在RJMCMC中加入简单的均值。
