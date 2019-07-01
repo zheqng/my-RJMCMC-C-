@@ -181,7 +181,7 @@ plot.label<-function(totaldata,z){
   plot(-100,-100,xlim=c(0,73),ylim=range(totaldata$Y),xlab=" ",ylab=" ")
   for (ii in 1:(35))
     lines(1:73,totaldata$Y[ii,],col = color_label[z[ii]],type = "l")
-  title('classification result')
+  # title('classification result')
 }
 
 plot.iter.label<-function(totaldata,z.iter){
