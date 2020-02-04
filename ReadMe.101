@@ -1,0 +1,48 @@
+PWCheck - Check the existence of passwords
+
+While doing a security review I stumbled into the necessity to find
+out, if all users do have a password set.
+Knowing the structure of USERID and LUSERID allowed me to check
+this, but not every security administrator has this information.
+
+So I decided to write a small tool, that checks all user entries and
+displays those, NOT having a password.
+
+To successfully run the tool, you MUST be logged on to SUPER.SUPER, or
+use a PROGIDed version of PWCHECK.
+
+
+The command syntax is:
+
+
+  [run] PWCHECK [/OUT <file>/] [-HELP]
+
+where
+
+  <file>   is the OUT file to which RESETSFC has to send to.
+           In case this is a non existant disk file, it becomes created
+           as an EDIT type file.
+
+  -HELP    causes ResetSFC to display a help screen
+
+e.g.
+
+$GHS1 PWCHECK 9>   pwcheck
+PWCheck (110) - T7172G06 - (22Aug2006) System \BEECH, running NSK G06
+Copyright (c) GreenHouse Software & Consulting 2003,2006
+GUARDIAN user: SA.TEST1 has NO password
+GUARDIAN user: SA.TEST2 has NO password
+Alias user:    DuDu has NO password
+Alias user:    JaJa has NO password
+Done
+$GHS1 PWCHECK 10>
+
+
+In case you like this tool: Feel free to use it!
+In case you feel insecure using the tool - do NOT use it.
+
+Please report errors and requests for enhancements to: Carl.Weber@GreenHouse.de
+
+
+The GreenHouse, 22Aug2006
+Carl Weber

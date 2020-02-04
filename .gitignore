@@ -1,0 +1,14 @@
+*.o
+lab_report_1
+
+demo/.Rhistory
+.Rhistory
+demo/gmon.out
+demo/output_file
+.vscode
+demo/train\ 1
+demo/train\ 2
+demo/train\ 3
+demo/train\ 4
+demo/z.res
+demo/generator.res
