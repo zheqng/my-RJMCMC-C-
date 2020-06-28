@@ -95,3 +95,6 @@ alea.o:
 
 clean:
 	rm -f rj_mix *.o
+cleanpdf:
+	rm *.pdf *.html generator.res .100 .101
+
