@@ -1,0 +1,55 @@
+
+// Makefile
+// ${workspaceRoot} the path of the folder opened in VS Code
+// ${file} the current opened file
+// ${fileBasename} the current opened file's basename
+// ${fileDirname} the current opened file's dirname
+// ${fileExtname} the current opened file's extension
+// ${cwd} the task runner's current working directory on startup
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "reveal": "always",  
+    "tasks": [
+        {
+            "args": [ "rj_mix" ],  
+            "label":"build",
+            "type": "shell",
+            "command": "make"
+        }
+    ]
+}
+// {
+//     "version": "2.0.0",
+//     "command": "make",
+//     "isShellCommand": true,
+//     "showOutput": "always",
+//     "options": {
+//         "cwd": "~/src/RJMCMC-my-C/2019.4.4/my-RJMCMC-Cplus/"
+//     },
+// 	"args": [
+        
+//     ],
+//     "tasks": [
+//         {
+//             "taskName": "rj_mix",
+//             "suppressTaskName": true,
+//             "isBuildCommand": true,
+//             // "cwd":"/media/zheqng/Seagate Backup Plus Drive/zheqng@nwu/src/RJMCMC-my-C/simu1/2019.3.1/train/"
+//             "args": [
+//                 "make rj_mix"
+//             ]
+//         },
+//         {
+//             "taskName": "demo",
+//             "suppressTaskName": true,
+//             "isTestCommand": true,
+//             "cwd":"/media/zheqng/Seagate Backup Plus Drive/zheqng@nwu/src/RJMCMC-my-C/simu1/2019.3.1/train/demo"
+//             "args": [
+//                 "make demo"
+//             ]
+//         }
+       
+//     ]
+// }
