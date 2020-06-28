@@ -16,4 +16,5 @@ demo_omp2: traindata.dat traindata.arg ../test_omp2
 		../test_omp2 traindata
 		
 clean :
-	rm -f *.sts *.txt
+	rm *.png *.RData *.pdf traindata.sts generator.res  train-testdata.dat validedata.dat
+
