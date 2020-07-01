@@ -1,7 +1,7 @@
 
 y.range<-function(dat){
   y.range=c(0,0)
-  for(m in 1:dat$M)
+  for(m in 1:dat$curve.num)
   {
     range.elem<-range(dat[[m]]$y)
     y.range[1]<- min(y.range,range.elem)
@@ -13,7 +13,7 @@ y.range<-function(dat){
 
 
 
-plot.mixgaussian<-function(dat,step,K,make.pdf = FALSE){
+plot.mixgaussian<-function(dat,z,K,make.pdf = FALSE){
   # make pdf
   if(make.pdf){
     pdf('simudata.pdf', 
@@ -27,31 +27,22 @@ plot.mixgaussian<-function(dat,step,K,make.pdf = FALSE){
   }
   # plot data
   mix.colors =rainbow(K)
-  op<-par(mfrow=c(1,3))
+  op<-par(mfrow=c(1,K))
   # plot(dat[[1]]$x,dat[[1]]$y,col=mix.colors[[dat[[1]]$k]],
   #      type="l",ylim=y.range(dat),xlab = "",ylab="")
   # title(paste(dat[[m]]$k))
   for(k in (1:K))
   {
-    m=(k-1)*step+1;
-    plot(dat[[m]]$x,dat[[m]]$y,col=mix.colors[[dat[[m]]$k]],ylim= y.range(dat),type="l",xlab = "",ylab="")
-    for(j in 2:step){
-      m = (k-1)*step +j;
-      lines(dat[[m]]$x,dat[[m]]$y,col=mix.colors[[dat[[m]]$k]],type="l",xlab = "",ylab="")
+    index = which(z==k)
+    m = index[1]
+    plot(dat[[m]]$x,dat[[m]]$y,col=mix.colors[k],xlim = c(-4,4),ylim= y.range(dat),type="l",xlab = "",ylab="")
+    for(j in 2:length(index)){
+      m = index[j]
+      lines(dat[[m]]$x,dat[[m]]$y,col=mix.colors[k],type="l",xlab = "",ylab="")
     }
-    title(paste(k))
+    title(paste("the",k,"th component"))
   }
   op<-par(mfrow=c(1,1))
 }
 
-# plot.mixgaussian2<-function(dat){
-#   df<-data.frame(x = dat[[1]]$x, y = dat[[1]]$y,type = as.character(1))
-#  for(m in 2:dat$M){
-#    df.new <- data.frame(x = dat[[m]]$x, y = dat[[m]]$y,type = as.character(m))
-#    df <-rbind(df,df.new)
-#  }
-# 
-#   
-#   library(ggplot2)
-#   ggplot(df)+geom_line(aes(x,y,colour=type))
-# }
+

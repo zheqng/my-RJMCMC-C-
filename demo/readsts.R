@@ -60,6 +60,7 @@ theta = theta.tmp
 #   w <-rbind(w,theta[[i]]$w)
 # }
 
+# load('../function simulation/simudata.RData')
 
 traindata = list("temp","X","Y","curve.num")
 traindata$temp =read.table("traindata.dat")
@@ -67,17 +68,17 @@ traindata$curve.num = dim(traindata$temp)[1]/2
 traindata$X=(traindata$temp)[(1:traindata$curve.num)*2-1,]
 traindata$Y=traindata$temp[(1:traindata$curve.num)*2,]
 
-testdata = list("temp","X","Y","curve.num")
-testdata$temp =read.table("testdata.dat")
-testdata$curve.num = dim(testdata$temp)[1]/2
-testdata$X=(testdata$temp)[(1:testdata$curve.num)*2-1,]
-testdata$Y=testdata$temp[(1:testdata$curve.num)*2,]
-
-validedata = list("temp","X","Y","curve.num")
-validedata$temp =read.table("validedata.dat")
-validedata$curve.num = dim(validedata$temp)[1]/2
-validedata$X=(validedata$temp)[(1:validedata$curve.num)*2-1,]
-validedata$Y=validedata$temp[(1:validedata$curve.num)*2,]
+# testdata = list("temp","X","Y","curve.num")
+# testdata$temp =read.table("testdata.dat")
+# testdata$curve.num = dim(testdata$temp)[1]/2
+# testdata$X=(testdata$temp)[(1:testdata$curve.num)*2-1,]
+# testdata$Y=testdata$temp[(1:testdata$curve.num)*2,]
+# 
+# validedata = list("temp","X","Y","curve.num")
+# validedata$temp =read.table("../../validedata.dat")
+# validedata$curve.num = dim(validedata$temp)[1]/2
+# validedata$X=(validedata$temp)[(1:validedata$curve.num)*2-1,]
+# validedata$Y=validedata$temp[(1:validedata$curve.num)*2,]
 
 ###############################################################
 # N.paper=20000
